@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+  name: wenit-node-express-seed
+  namespace: wenit
+spec:
+  rules:
+  - host: wenit-node-express-seed.wenit.com.br
+    http:
+      paths:
+      - backend:
+          serviceName: wenit-node-express-seed
+          servicePort: 80
+  tls:
+    - hosts:
+      - wenit-node-express-seed.wenit.com.br
+      secretName: wenit-node-express-seed-tls

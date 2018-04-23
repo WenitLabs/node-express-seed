@@ -1,0 +1,98 @@
+{
+  "private": true,
+  "name": "node-express-seed",
+  "version": "1.0.0",
+  "description": "Seed para projetos Node.js utilizando Express.",
+  "homepage": "https://wenit.com.br/",
+  "author": "Wenit <contato@wenit.com.br>",
+  "contributors": [
+    {
+      "name": "Fernando de Morais",
+      "email": "morais@wenit.com.br"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com:WenitLabs/node-express-seed.git"
+  },
+  "keywords": [
+    "Wenit",
+    "seed",
+    "node",
+    "express"
+  ],
+  "watch": {
+    "dev:start": "_dev/bundle.js"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "lint": "eslint -c ./.eslintrc --ignore-path ./.gitignore ./src",
+    "lint:junit": "eslint -c ./.eslintrc -f junit -o ./test/_output/eslint-results.xml --ignore-path ./.gitignore ./src",
+    "test": "mocha --require @babel/register --recursive --reporter mocha-multi-reporters --reporter-options configFile=./test/config.json ./test/*.js",
+    "dev:clean": "rimraf _dev",
+    "dev:build": "cross-env NODE_ENV=development webpack --colors --display-error-details --watch --verbose --config tools/webpack.server.js",
+    "dev:bundle": "run-s dev:clean dev:build",
+    "dev:start": "cross-env NODE_ENV=development node _dev/bundle.js",
+    "dev:wait": "just-wait -p \"_dev/bundle.js\" --timeout 120 && npm-watch",
+    "dev": "concurrently --kill-others \"npm run dev:bundle\" \"npm run dev:wait\"",
+    "dist:clean": "rimraf _dist",
+    "dist:build": "cross-env NODE_ENV=production webpack --colors --display-error-details --progress --config tools/webpack.server.js",
+    "dist:bundle": "run-s dist:clean dist:build",
+    "dist:start": "cross-env NODE_ENV=production node _dist/server.js",
+    "dist:wait": "just-wait -p \"_dist/server.js\" --timeout 120 && npm run dist:start",
+    "dist": "concurrently --kill-others \"npm run dist:bundle\" \"npm run dist:wait\"",
+    "dist:image": "npm run dist:bundle && docker build -t wenit-project-dist .",
+    "dist:image:start": "npm run dist:image && docker run -it -p 8080:8080 --name wenit-project-dist wenit-project-dist"
+  },
+  "dependencies": {
+    "compression": "^1.7.2",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.16.3",
+    "lodash": "^4.17.5",
+    "source-map-support": "^0.5.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.44",
+    "@babel/plugin-transform-runtime": "^7.0.0-beta.44",
+    "@babel/preset-env": "^7.0.0-beta.44",
+    "@babel/preset-es2015": "^7.0.0-beta.44",
+    "@babel/preset-stage-0": "^7.0.0-beta.44",
+    "@babel/register": "^7.0.0-beta.44",
+    "@babel/runtime": "^7.0.0-beta.44",
+    "@sketchpixy/just-wait": "^1.0.5",
+    "@types/webpack": "^4.1.3",
+    "@types/webpack-env": "^1.13.6",
+    "awesome-typescript-loader": "^5.0.0",
+    "babel-eslint": "^8.2.3",
+    "babel-loader": "^8.0.0-beta.2",
+    "concurrently": "^2.1.0",
+    "cross-env": "^5.1.4",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.7.0",
+    "file-loader": "^1.1.11",
+    "json-loader": "^0.5.7",
+    "loader-utils": "^1.1.0",
+    "mocha": "^5.1.1",
+    "mocha-junit-reporter": "^1.17.0",
+    "mocha-multi-reporters": "^1.1.7",
+    "npm-run-all": "^4.1.2",
+    "npm-watch": "^0.3.0",
+    "null-loader": "^0.1.1",
+    "progress-bar-webpack-plugin": "^1.11.0",
+    "raw-loader": "^0.5.1",
+    "rimraf": "^2.5.2",
+    "script-loader": "^0.7.2",
+    "typescript": "^2.8.1",
+    "url-loader": "^1.0.1",
+    "webpack": "^4.6.0",
+    "webpack-cli": "^2.0.14",
+    "webpack-dev-server": "^3.1.3",
+    "webpack-merge": "^4.1.2"
+  },
+  "engines": {
+    "node": "8.4.0"
+  }
+}

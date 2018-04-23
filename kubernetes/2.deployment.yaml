@@ -1,0 +1,59 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: wenit-node-express-seed
+  labels:
+    k8s-app: wenit-node-express-seed
+  namespace: wenit
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        k8s-app: wenit-node-express-seed
+    spec:
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 60
+      imagePullSecrets:
+        - name: wenitdemo-acr-auth
+      containers:
+      - name: wenit-node-express-seed
+        image: wenitdemo.azurecr.io/wenit-node-express-seed:latest
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        env:
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: NODE_ENV
+            value: "production"
+          - name: SERVICE_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: PORT
+            value: "8080"
+      dnsPolicy: ClusterFirst
